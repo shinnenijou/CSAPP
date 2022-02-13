@@ -1,2 +1,6 @@
 
 .vscode/settings.json
+show_asm/show_asm
+show_asm/src.cpp
+test.cpp
+test
