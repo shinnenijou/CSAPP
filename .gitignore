@@ -1,4 +1,5 @@
 
-.vscode/settings.json
-.vscode/tasks.json
 src_to_show_asm.cpp
+.DS_Store
+unitest.dSYM
+unitest
