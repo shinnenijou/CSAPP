@@ -1,8 +1,4 @@
 
 .vscode/settings.json
-show_asm/show_asm
-show_asm/src.cpp
-test.cpp
-test
 .vscode/tasks.json
 src_to_show_asm.cpp
