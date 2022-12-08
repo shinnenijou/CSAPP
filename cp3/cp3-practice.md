@@ -149,3 +149,122 @@ void decode1(long *xp, long *yp, long *zp)
     return t;
 }
 ```
+
+## 练习题3.8
+> 假设下面的值存放在指明的内存地址和寄存器中:
+>    | 地址  | 值   |
+>    | ----- | ---- |
+>    | 0x100 | 0xFF |
+>    | 0x104 | 0xAB |
+>    | 0x108 | 0x13 |
+>    | 0x10C | 0x11 |
+> 
+>    | 寄存器 | 值    |
+>    | ------ | ----- |
+>    | %rax   | 0x100 |
+>    | %rcx   | 0x1   |
+>    | %rdx   | 0x3   |
+>
+> 填写下表，给出下面指令的效果，说明将被更新的寄存器或内存位置，以及得到的值：
+
+| 指令                         | 目的                                     | 值    |
+| ---------------------------- | ---------------------------------------- | ----- |
+| `addq %rcx, (%rax)`          | 在寄存器`%rax`保存的值加上`%rcx`保存的值 | 0x100 |
+| `subq %rdx, 8(%rax)`         | 从地址`%rax + 8`保存的值中减去`%rdx`的值 | 0xA8  |
+| `imulq $16, (%rax, %rdx, 8)` | 将地址`(%rax + 8 * %rdx)`保存的值乘以16  | 0x110 |
+| `incq 16(%rax)`              | 将地址`%rax + 16`保存的值加1             | 0x14  |
+| `decq %rcx`                  | 将寄存器`%rcx`保存的值减1                | 0x0   |
+| `subq %rdx, %rax`            | 从寄存器`%rax`的值中减去`%rdx`的值       | 0xFD  |
+
+## 联系题3.9
+> 假设我们想生成以下C函数的汇编代码：
+> ```
+> long shift_left4_rightn (long x, long n)
+> {
+>     x <<= 4:
+>     x >>= n;
+>     return x;
+> }
+> ```
+> 下面这段汇编代码执行实际的移位，并将最后的结果放在奇存器`%rax`中。此处省略了两条关键的指令。
+> 参数`x`和`n`分别存放在寄存器`%rdi`和`%rsi`中。
+>
+> 根据右边的注释，填出缺失的指令。请使用算术右移操作。
+
+```
+  1ong shift_left4_rightn (1ong x, 1ong n)
+  x in %rdi, n in %rsi
+shift_left4_rightn:
+  movq  %rdi, %rax  # Get x
+  salq  $4, %rax    # x <<= 4
+  movl  %esi, %ecx  # Get n (4 bytes)
+  sarq  %cl, %rax   # x >>= n
+  ret
+```
+
+## 练习题3.10
+> 下面的函数是图3-11a中函数一个变种，其中有些表达式用空格替代  
+> 实现这些表达式的汇编代码如下：
+> ```
+>   long arith2 (long ×, long y, long z)
+>   x in %rdi, y in %rsi, z in %rdx
+> arith2:
+>   orq   %rsi, %rdi
+>   sarq  $3, %rdi
+>   notq  %rdi
+>   movq  %rdx, %rax
+>   subq  %rdi, %rax
+>   ret
+> ```
+> 基于这些汇编代码，填写C语言代码中缺失的部分。
+
+```
+long arith2(long x, long y, long z)
+{
+    long t1 = x | y;
+    long t2 = t1 >> 3;
+    long t3 = ~t2;
+    long t4 = z - t3;
+    return t4;
+}
+```
+
+## 练习题3.11
+> 常常可以看见以下形式的汇编代码行  
+> `xorq %rdx, %rdx`  
+> 但是在产生这段汇编代码的C代码中，并没有出现 EXCLUSIVE-OR 操作。  
+> 1. 解释这条特殊的 EXCIUSIVE-OR 指今的效果，它实现了什么有用的操作。  
+> 2. 更直接地表达这个操作的汇编代码是什么？  
+> 3. 比较同样一个操作的两种不同实现的编码字节长度  
+
+1. 该指令将`%rdx`的值与自身异或后更新`%rdx`。该指令实现了将寄存器保存的所有位重置为0。
+2. `movl $0, %edx`
+3. 使用异或指令只需要2个字节(指令+寄存器)，使用移动指令需要5个字节(指令+直接数+寄存器)
+
+## 练习题3.12
+> 考虑如下函数，它计算两个无符号64位数的商和余数：
+> ```
+> void uremdiv (unsigned long x, unsigned long y,
+>               unsigned long *qp, unsigned long *rp) {
+>   unsigned long q = x/y;
+>   unsigned long r = x%y;
+>   *qp = 0;
+>   *rp =r;
+> }
+> ```
+> 修改有符号除法的汇编代码来实现这个函数。
+
+```
+  void uremdiv (unsigned 1ong X, unsigned 1ong y
+                unsigned long *qp, unsigned long *rp)
+  x in %rdi, y in %rsi, ap in %rdx, rp in %rcx
+uremdiv:
+  movq  %rdx, %r8       # Copy qp
+  movq  %rdi, %rax      # Move x to lower 8 bytes of dividend
+  xorl  %rdx, %rdx      # Zero-extend to upper 8 bytes of dividend
+  divq  %rsi            # Divide by y
+  movq  %rax, (%r8)     # Store quitient at qp
+  movq  %rdx, (%rcx)    # Store remainder at rp
+  ret
+```
+
