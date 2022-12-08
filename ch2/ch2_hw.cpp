@@ -63,4 +63,5 @@ bool any_odd_one(unsigned x){/* Ex. 2.64
 bool odd_ones(unsigned x){/* Ex. 2.65
     return 1 when x contains an odd number of 1s; 0 otherwise. 
     Assume w = 32 */
+    return true;
 }
