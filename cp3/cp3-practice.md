@@ -624,3 +624,31 @@ update:
 ```
 
 ## 练习题3.30
+1. 标号值有`-1, 0, 1, 2, 4, 5, 7`
+2. `case 0`与`case 2`有多个标号
+
+## 练习题3.31
+补全的C代码
+```
+void switcher(long a, long b, long c, long *dest)
+{
+   long val;
+   switch(a){
+      case 5:
+         c = b ^ 0xF;
+      case 0:
+         val = 112 + c;
+         break;
+      case 2:
+      case 7:
+         val = (b + c) << 2;
+         break;
+      case 4:
+         val = a;
+         break;
+      default:
+         val = b;
+   }
+   *dest = val;
+}
+```
