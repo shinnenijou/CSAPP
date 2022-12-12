@@ -313,7 +313,7 @@ uremdiv:
 4. `testl  %edi, %edi`  比较32位数据  
    `setne %al`  设置条件是不等，因此data_t可能为`int`或`unsigned int`，`COMP`为`!=`
 
-# 练习题3.15
+## 练习题3.15
 > 在下面这些反汇编二进制代码节选中，有些信息被`X`代替了。回答下列关于这些指令的问题。
 > 1. 下面je指令的目标是什么？（在此，你不需要知道任何有关callq指令的信息。）  
 > ```
@@ -342,4 +342,285 @@ uremdiv:
 2. `0x400425`
 3. `0x400543`
    `0x400545`
-4. 
+4. `0x400560`
+
+## 练习题3.16
+> 已知下列C代码:
+> ```
+> void cond(long a, long *p)
+> {
+>     if (p && a > *p)
+>         *p = a;
+> }
+> ```
+> CCC会产生下面的汇编代码:
+> ```
+>   void cond(long a, long *p)
+>   a in %rdi, p in %rsi
+> cond:
+>   testq  %rsi, %rsi
+>   je     .L1
+>   cmpq   %rdi, (%rsi)
+>   jge    .L1
+>   movq   %rdi, (%rsi)
+> .L1:
+>   rep; ret
+> ```
+> 1. 按照图3-166中所示的风格，用C语言写一个8ot0版本，执行同样的计算，并模拟汇编代码的控制流。
+> 像示例中那样给汇编代码加上注解可能会有所帮助。
+> 2. 请说明为什么C语言代码中只有一个if语句，而汇编代码包含两个条件分支。
+
+1. goto风格c
+```
+void cond(long a, long *p)
+{
+   if (p == 0)
+      goto L1;
+   if (*p - a >= 0)
+      goto L1;
+   *p = a;
+L1:
+   return;
+}
+```
+2. 由于c代码中的if语句由两个独立的表达式用逻辑与连接，因此实际上分别需要对两个条件独立进行判断。
+
+## 练习题3.17
+> 将if语句翻译成goto代码的另一种可行的规则如下:
+> ```
+>    t = test-expr;
+>    if (t)
+>       goto true;
+>    else-statement;
+>    goto done;
+> true:
+>    then-statement;
+> done:
+> ```
+> 1. 基于这种规则，重写absdiff_se的goto版本。
+> 2. 你能想出选用一种规则而不选用另一种规则的理由吗？
+
+1. absdiff_se的goto版本
+```
+long absdiff_se(long x, long y)
+{
+   long result;
+   if (x < y)
+      goto true;
+   ge_cnt++;
+   result = x - y;
+   goto done;
+true:
+   le_cnt++;
+   result = y - x;
+done:
+   return result;
+}
+```
+2. 编译器采用的规则更容易应用在没有else的if语句中
+
+---
+以下开始练习题不再录入题目正文
+## 练习题3.18
+```
+long test(long x, long y, long z){
+   long val = x + y + z;
+   if (x + 3 < 0){
+      if (y - z < 0)
+         val = x * y;
+      else
+         val = y * z;
+   }else if (x - 2 > 0)
+      val = z * x;
+   return val;
+}
+```
+
+## 练习题3.19
+1. 预测错误的处罚大约30个周期
+2. 分支预测错误时需要46个周期
+
+## 练习题3.20
+1. `#define OP /`
+2. 汇编代码
+```
+  long arith(long x)
+  x in %rdi
+arith:
+  leaq   7(%rdi), %rax     # x为负时需要为x加上偏移量
+  testq  %rdi, %rdi        # 测试x的符号
+  cmovns %rdi, %rax        # x非负时将x传送至%rax, 直接进行位移
+  sarq   $3, %rax          # 算数右移3位
+  ret
+```
+
+## 练习题3.21
+```
+long test(long x, long y){
+   long val = 8 * x;
+   if (y > 0){
+      if (x - y >= 0)
+         val = x & y;
+      else
+         val = y - x;
+   }else if (y + 2 <= 0)
+      val = x + y;
+   return val
+}
+```
+
+## 练习题3.22
+用以下程序计算能表示的最大的n的值
+```
+#define DATATYPE int
+int is_overflowed(DATATYPE x, DATATYPE y){
+   if (!y) {
+      return false;
+   }
+
+   DATATYPE xy = x * y;
+   return xy / y != x;
+}
+
+int max_n(){
+   DATATYPE i = 1, prod = 1;
+   while (!is_overflowed(prod, i)){
+      prod *= i;
+      i++;
+   }
+   return i - 1;
+}
+```
+1. 32位的`int`能表示的最大n为12
+2. 64位的`long`能表示的最大n为20
+
+## 联系题3.23
+1. `y`存放在寄存器`%rcx`中，`n`存放在寄存器`%rdx`中，`x`存放在寄存器`%rax`中（用于返回）
+2. 由于p在程序运行过程中所保存的地址始终没有变化，编译器将对通过`p`的间接引用转变为直接引用`x`，并将其与`x += y;`的语句用同一个`leaq`指令完成。
+3. 汇编代码如下
+```
+  long dw_loop(long x)
+  x initially in %rdi
+dw_loop:
+  movq   %rdi, %rax              # prepare return value
+  movq   %rdi, %rcx              # prepare multiplation
+  imulq  %rdi, %rcx              # compute y = x * x
+  leaq   (%rdi, %rdi), %rdx      # compute n = 2 * x
+.L2:
+  leaq   1(%rcx, %rax), %rax     # compute x = x + y + 1
+  subq   $1, %rdx                # decrement n
+  testq  %rdx, %rdx              # test n
+  jg     .L2                     # if >, goto .L2 then loop
+  rep; ret                       # return
+```
+
+## 练习题3.24
+补全的C代码
+```
+long loop_while(long a, long b)
+{
+   long result = 1;
+   while(a < b){
+      result *= (a + b);
+      a++;
+   }
+   return result;
+}
+```
+
+## 练习题3.25
+补全的C代码
+```
+long loop_while2(long a, long b)
+{
+   long result = b;
+   while(b > 0){
+      result *= a;
+      b -= a;
+   }
+   return result;
+}
+```
+
+## 练习题3.26
+1. jump to middle
+2. 补全的C代码
+```
+long fun_a(unsigned long x){
+   long val = 0;
+   while(x > 0){
+      val ^= x;
+      x >>= 1;
+   }
+   return val & 1;
+}
+```
+3. 该程序对输入的`x`所有位进行了异或操作，用于判断`x`位表示中1的数量是否为奇数，个数为偶数（包含0）则返回值为`0`，个数为奇数则返回值为`1`
+
+## 练习题3.27
+goto风格代码
+```
+long fact_for_guarded_do(long n)
+{
+   long i = 2;
+   long result = 1;
+   if (i > n){
+      goto done;
+   }
+loop:
+   result *= i;
+   i++;
+   if (i <= n){
+      goto loop;
+   }
+done:
+   return result;
+}
+```
+
+## 练习题3.28
+1. 补全的C代码
+```
+long fun_b(unsigned long x){
+   long val = 0;
+   long i;
+   for (i = 64; i != 0; i--){
+      int mask = x & 1;
+      val += val;
+      val |= mask;
+      x >>= 1;
+   }
+   return val;
+}
+```
+2. 循环变量`i`的初始值已经满足了循环条件，所以编译器优化了进入循环前的测试部分。
+3. 该程序将输出`x`位模式顺序反转后的位模式
+
+## 练习题3.29
+1. 直接按照规则翻译将得到如下代码
+```
+long sum = 0;
+long i = 0;
+while(i < 10){
+   if (i & 1)
+      continue;
+   sum += 1;
+   i++;
+}
+```
+此时一旦循环内条件分支满足，`i`的自增将会一并被跳过，从而导致死循环
+
+2. 代码可以修改如下
+```
+long sum = 0;
+long i = 0;
+while(i < 10){
+   if (i & 1)
+      goto update;
+   sum += 1;
+update:
+   i++;
+}
+```
+
+## 练习题3.30
