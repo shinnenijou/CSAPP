@@ -652,3 +652,47 @@ void switcher(long a, long b, long c, long *dest)
    *dest = val;
 }
 ```
+
+## 练习题3.32
+| 标号 | PC       | 指令                  | %rdi | %rsi | %rax | %rsp           | *%rsp    | 描述                 |
+| ---- | -------- | --------------------- | ---- | ---- | ---- | -------------- | -------- | -------------------- |
+| M1   | 0x400560 | callq                 | 10   | -    | -    | 0x7fffffffe820 | -        | 调用first(10)        |
+| F1   | 0x400548 | lea 0x1(%rdi), %rsi   | 10   | -    | -    | 0x7fffffffe818 | 0x400565 | 进入first(10)        |
+| F2   | 0x40054c | sub &0x1, %rdi        | 10   | 11   | -    | 0x7fffffffe818 | 0x400565 | 执行first(10)语句    |
+| F3   | 0x400550 | callq 400540 \<last\> | 10   | 11   | -    | 0x7fffffffe818 | 0x400565 | 调用last(10, 11)     |
+| L1   | 0x400540 | mov %rdi, %rax        | 10   | 11   | -    | 0x7fffffffe810 | 0x400555 | 进入last(10, 11)     |
+| L2   | 0x400543 | imul %rsi, %rax       | 10   | 11   | 10   | 0x7fffffffe810 | 0x400555 | 执行last(10, 11)语句 |
+| L3   | 0x400547 | ret                   | 10   | 11   | 110  | 0x7fffffffe810 | 0x400555 | 返回first(10)        |
+| F4   | 0x400555 | repz retq             | 10   | 11   | 110  | 0x7fffffffe818 | 0x400565 | 返回main             |
+| M2   | 0x400565 | mov %rax, %rdx        | 10   | 10   | 110  | 0x7fffffffe820 | -        | 继续执行main语句     |
+
+## 练习题3.33
+1. `size_t procprob(int a, short b, long *u, char *v);`
+2. `size_t procprob(int b, short a, long *v, char *u);`
+
+## 练习题3.34
+1. `x`~`x + 5`
+2. `x + 6`, `x + 7`
+3. 总共要保存8个局部变量，但是被调用者保存寄存器只有6个，无法全部保存
+
+## 练习题3.35
+1. 递归的传入参数`x`
+2. 补全的C代码
+```
+long rfun(unsigned long x){
+   if (x == 0)
+      return 0;
+   unsigned long nx = x >> 2;
+   long rv = rfun(nx);
+   return x + rv;
+}
+```
+
+## 练习题3.36
+| 数组 | 元素大小 | 整个数组大小 | 起始地址 | 元素i      |
+| ---- | -------- | ------------ | -------- | ---------- |
+| S    | 2        | 14           | $x_S$    | $x_S + 2i$ |
+| T    | 8        | 24           | $x_T$    | $x_T + 8i$ |
+| U    | 8        | 48           | $x_U$    | $x_U + 8i$ |
+| V    | 4        | 32           | $x_V$    | $x_V + 4i$ |
+| W    | 8        | 4            | $x_W$    | $x_W + 8i$ |
