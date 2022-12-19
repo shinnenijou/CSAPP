@@ -1,7 +1,7 @@
 #include<ctime>
 #include<iostream>
 
-inline void function_run_time(void func(void), int repeat){
+void function_run_time(void func(void), int repeat){
     int y;
     clock_t t_start, t_end;
     t_start = clock();
