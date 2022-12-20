@@ -29,3 +29,41 @@ vmovsd  %xmm0, (%rbx)
 ```
 可以发现中间的传送指令`vmovsd  (%rbx), %xmm0`
 在传送前后%xmm0的值都没有发生任何变化，因此在O2的优化版本中省去了这一步指令，并且不会导致程序有任何违背预期的行为。
+
+## 练习题5.5
+1. 内循环进行了$2n$次乘法$2n$次加法，其中$n$次加法为循环开支。
+2. 内循环部分的汇编代码
+```
+      20: f2 0f 10 5c c7 08     movsd   8(%rdi,%rax,8), %xmm3       // load a[i]
+      26: f2 0f 59 da           mulsd   %xmm2, %xmm3                // a[i] * xpwr
+      2a: f2 0f 58 c3           addsd   %xmm3, %xmm0                // update result
+      2e: f2 0f 59 d1           mulsd   %xmm1, %xmm2                // update xpwr
+      32: 48 ff c0              incq    %rax                        // self-increase i
+      35: 48 39 c6              cmpq    %rax, %rsi 
+      38: 75 e6                 jne     -26 <__Z4polyPddl+0x20>
+```
+寄存器更新数据流如图  
+[dataflow](../res/img/cp5_practice_5.7.png)
+## 练习题5.7
+$5\times 5$循环展开如下
+```
+void combine(vec_ptr v, data_t *dest)
+{
+    long i;
+    long length = vec_length(v);
+    long limit = length - 4;
+    data_t *data = get_vec_start(v);
+    data_t acc = IDENT
+
+    // Combine 5 elements at a time
+    for (i = 0; i < limit; i+=5){
+        acc = (((((acc OP data[i]) OP data[i + 1]) OP data[i + 2]) OP data[i + 3]) OP data[i + 4]);
+    }
+    
+    // Finish any remaining elements
+    for(; i < length; ++i){
+        acc = acc OP data[i];
+    }
+    *dest = acc;
+}
+```
