@@ -4,31 +4,26 @@
 #define ANSWERTYPE unsigned
 
 #define ARGPARSEFUNC strtoll   // 参数解析方法
-#define ARGPARSEBASE 16        // 参数表示的进制
-
 #define ANSPARSEFUNC strtoll   // 返回值解析方法 
-#define ANSPARSEBASE 16        // 返回值表示的进制
 
+#define TEST_FUNC generate_word
+
+#include "./ch2/ch2_hw.cpp"
+// ==============================================
 #include "unittest.h"
 #include "./common/rio.cpp"
 
-ANSWERTYPE test_func(ARGTYPE arg0, ARGTYPE arg1){
-    /*Generate a new word using the lowest byte from x, and
-    the remained bytes from y */
-    return (arg0 & 0xFF) + (arg1 & ~0xFF);
-}
-
 bool TestCase::run(ANSWERTYPE *output){
-    ANSWERTYPE ans = test_func(m_test_data.arg[0], m_test_data.arg[1]);
+    ANSWERTYPE ans = TEST_FUNC(m_test_data.arg[0], m_test_data.arg[1]);
     *output = ans;
     return ans == m_test_data.anwser;
 }
-// ==============================================
+
 TestCase::TestCase(char *line, int n): m_test_data(n){
     char *cptr = line, *cptr_end;
     int cnt = 0;
     while (cnt != m_test_data.argc){
-            ARGTYPE temp = ARGPARSEFUNC(cptr, &cptr_end, ARGPARSEBASE);
+            ARGTYPE temp = ARGPARSEFUNC(cptr, &cptr_end, 0);
             if (cptr == cptr_end){
                 break;
             }
@@ -36,7 +31,7 @@ TestCase::TestCase(char *line, int n): m_test_data(n){
             cnt++;
             cptr = cptr_end;
     }
-    ANSWERTYPE temp = ANSPARSEFUNC(cptr, &cptr_end, ANSPARSEBASE);
+    ANSWERTYPE temp = ANSPARSEFUNC(cptr, &cptr_end, 0);
     if(cptr == cptr_end){
         printf("test case answer error\n");
         exit(-1);
@@ -50,7 +45,7 @@ void TestCase::print(){
         printf(" %d", m_test_data.arg[i]);
     }
     printf("| ");
-    printf("anwser: %d", m_test_data.anwser);
+    printf("Expected anwser: %d", m_test_data.anwser);
 }
 
 UnitTest::~UnitTest(){
@@ -88,7 +83,7 @@ void UnitTest::run_test()
         ANSWERTYPE output;
         if(!ptr->run(&output)){
             ptr->print();
-            printf("| your answer: %d\n", output);
+            printf("| Your answer: %d\n", output);
             cnt++;
         }
     }
