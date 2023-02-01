@@ -35,7 +35,7 @@ bool number_check(int x){/* Ex. 2.61*/
 bool int_shifts_are_arithmetic(){/* Ex. 2.62
     Test whether the right shift on your machine is arithmetic
     return 1 if is, or return 0 if not*/
-    return !~((INT_MIN >> (sizeof(int)<<3)) - 1);
+    return !~(INT_MIN >> ((sizeof(int) << 3) - 1));
 }
 
 unsigned srl(unsigned x, int k){/* Ex. 2.63
