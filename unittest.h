@@ -5,20 +5,21 @@
 #include <string>
 
 // ============ MODIFY HERE =================
-#define ARGC 2
-#define ARGTYPE int
-#define ANSWERTYPE int
+
 
 struct TestData
 {
-    ARGTYPE arg[ARGC];
+    int argc;
+    ARGTYPE *arg;
     ANSWERTYPE anwser;
+    TestData(int n){ arg = (ARGTYPE *)malloc(sizeof(ARGTYPE) * 8 * n); argc = n;}
+    ~TestData(){ free(arg); }
 };
 // ==============================================
 class TestCase{
 
 public:
-    TestCase(char *);
+    TestCase(char *, int);
     ~TestCase(){};
     void print();
     bool run(ANSWERTYPE *);
@@ -29,7 +30,7 @@ private:
 class UnitTest{
 
 public:
-    UnitTest(const std::string &);
+    UnitTest(const std::string &, const int);
     ~UnitTest();
     void print();
     void run_test();
