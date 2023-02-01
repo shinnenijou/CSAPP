@@ -2,6 +2,14 @@
 #define RIO_H
 
 #include<sys/types.h>
+#include <unistd.h>
+#include <cerrno>
+#include <cstring>
+#include <fcntl.h>
+#include <cstdio>
+#include <cstdlib>
+
+int Open(const char *path, const int flags);
 
 #define RIO_BUFSIZE 8192
 typedef struct {

@@ -1,7 +1,14 @@
 #include "rio.h"
-#include <unistd.h>
-#include <cerrno>
-#include <cstring>
+
+int Open(const char *path, const int flags){
+    int fd;
+    if((fd = open(path, flags)) < 0){
+        fprintf(stderr, "Failed to open file: %s\n", path);
+        exit(-1);
+    }
+
+    return fd;
+}
 
 ssize_t rio_readn(int fd, void *usrbuf, size_t n){
     size_t nleft = n;
@@ -77,11 +84,10 @@ ssize_t rio_readlineb(rio_t *rp, void *usrbuf, size_t maxlen){
 
     for (n = 1; n < maxlen; n++){
         if ((read_cnt = rio_read(rp, &c, 1)) == 1){
-            *bufp++ = c;
             if(c == '\n'){
-                n++;
                 break;
             }
+            *bufp++ = c;
         }
         else if (read_cnt == 0){
             break;
