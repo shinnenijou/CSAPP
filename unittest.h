@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+// ============ MODIFY HERE =================
 #define ARGC 2
 #define ARGTYPE int
 #define ANSWERTYPE int
@@ -13,7 +14,7 @@ struct TestData
     ARGTYPE arg[ARGC];
     ANSWERTYPE anwser;
 };
-
+// ==============================================
 class TestCase{
 
 public:

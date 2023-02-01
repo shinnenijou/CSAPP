@@ -25,7 +25,7 @@ TestCase::TestCase(char *line){
     m_test_data.anwser = atoi(cptr);
 }
 
-// ============ MODIFY HERE =================
+// ==============================================
 
 void TestCase::print(){
     printf("arg:");
