@@ -87,7 +87,7 @@ void UnitTest::run_test()
             cnt++;
         }
     }
-    printf("Correct answer: %d/%d\n", m_test_cases.size() - cnt, m_test_cases.size());
+    printf("Correct answer: %lu/%lu\n", m_test_cases.size() - cnt, m_test_cases.size());
 }
 
 int main(){

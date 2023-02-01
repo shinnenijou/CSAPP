@@ -4,9 +4,6 @@
 #include <vector>
 #include <string>
 
-// ============ MODIFY HERE =================
-
-
 struct TestData
 {
     int argc;
@@ -17,7 +14,6 @@ struct TestData
 };
 // ==============================================
 class TestCase{
-
 public:
     TestCase(char *, int);
     ~TestCase(){};
