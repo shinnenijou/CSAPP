@@ -1,0 +1,15 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
+
+PROJECT(CASPP)
+
+SET(CMAKE_CXX_STANDARD 17)
+
+SET(SRC_LIST 
+    ./main.cpp 
+    ./common/catch2/catch_amalgamated.cpp 
+    ./common/rio/rio.cpp
+)
+SET(OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+
+ADD_EXECUTABLE(main ${SRC_LIST})

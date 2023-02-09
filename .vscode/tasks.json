@@ -1,30 +1,70 @@
 {
 	"version": "2.0.0",
+	"presentation": {
+		"echo": true,
+		"reveal": "always",
+		"focus": false,
+		"panel": "shared",
+		"showReuseMessage": true,
+		"clear": false
+	},
 	"tasks": [
 		{
-			"type": "cppbuild",
-			"label": "C/C++: clang++ アクティブなファイルのビルド",
-			"command": "/usr/bin/clang++",
-			"args": [
-				"-std=c++17",
-				"-fcolor-diagnostics",
-				"-fansi-escape-codes",
-				"-g",
-				"${file}",
-				"-o",
-				"${fileDirname}/${fileBasenameNoExtension}"
-			],
+			"label": "mkdir build",
+			"command": "mkdir",
 			"options": {
-				"cwd": "${fileDirname}"
+				"cwd": "${workspaceFolder}"
 			},
-			"problemMatcher": [
-				"$gcc"
+			"args": [
+				"-p",
+				"build"
 			],
+			"presentation": {
+				"reveal": "never"
+			}
+		},
+		{
+			"label": "cmake",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				".."
+			],
+			"dependsOn": "mkdir build"
+		},
+		{
+			"label": "make",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "make",
+			"args": [],
+			"dependsOn": "cmake"
+		},
+		{
+			"label": "Run",
+			"options": {
+				"cwd": "${workspaceFolder}/bin"
+			},
+			"command": "main",
+			"dependsOn": "make",
 			"group": {
 				"kind": "build",
 				"isDefault": true
-			},
-			"detail": "コンパイラ: /usr/bin/clang++"
+			}
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: build",
+			"command": "build",
+			"targets": [
+				"main"
+			],
+			"problemMatcher": [],
+			"detail": "CMake template build task",
+			"dependsOn": "mkdir build"
 		}
 	]
 }
