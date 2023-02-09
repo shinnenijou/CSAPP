@@ -5,7 +5,7 @@
 		"showReuseMessage": false
 	},
 	"tasks": [
-		{
+		{// mkdir
 			"label": "mkdir build",
 			"command": "mkdir",
 			"options": {
@@ -20,7 +20,7 @@
 				"clear": true
 			}
 		},
-		{
+		{// cmake
 			"label": "cmake",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -31,7 +31,7 @@
 			],
 			"dependsOn": "mkdir build"
 		},
-		{
+		{// make
 			"label": "make",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -40,7 +40,7 @@
 			"args": [],
 			"dependsOn": "cmake"
 		},
-		{
+		{// Run
 			"label": "Run",
 			"options": {
 				"cwd": "${workspaceFolder}/bin"
@@ -55,7 +55,7 @@
 				"clear": true
 			}
 		},
-		{
+		{// Cmake: build
 			"type": "cmake",
 			"label": "CMake: build",
 			"command": "build",
