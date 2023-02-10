@@ -9,6 +9,7 @@ SET(SRC_LIST
     #./common/catch2/catch_amalgamated.cpp 
     ./common/rio/rio.cpp
     ./common/network/network.cpp
+    ./common/wrapper/unix_wrap.cpp
 )
 SET(OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

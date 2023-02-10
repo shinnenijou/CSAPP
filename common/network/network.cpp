@@ -1,33 +1,4 @@
-#include "network.h"
-
-int Close(int fd){
-    if (close(fd) != 0){
-        std::cerr << "[Close]: " << strerror(errno) << std::endl;
-        exit(0);
-    }
-    return 0;
-}
-
-int Setsockopt(int sockfd, int level, int opt, const void * optval, socklen_t plen){
-    int rc;
-    if((rc = setsockopt(sockfd, level, opt, optval, plen)) != 0){
-        std::cerr << "[Setsockopt]: " << gai_strerror(rc) << std::endl;
-        exit(-1);
-    }
-    return 0;
-}
-
-int Getaddrinfo(const char *host, const char *port, const struct addrinfo *hints, struct addrinfo ** dst)
-{
-    int rc;
-    if ((rc = getaddrinfo(host, port, hints, dst)) != 0)
-    {
-        std::cerr << "[Getaddrinfo]: " << gai_strerror(rc) << std::endl;
-        exit(-1);
-    }
-
-    return 0;
-}
+#include "../common.h"
 
 int open_clientfd(char *hostname, char *port)
 {

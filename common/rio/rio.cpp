@@ -1,14 +1,4 @@
-#include "rio.h"
-
-int Open(const char *path, const int flags){
-    int fd;
-    if((fd = open(path, flags)) < 0){
-        fprintf(stderr, "Failed to open file: %s\n", path);
-        exit(-1);
-    }
-
-    return fd;
-}
+#include "../common.h"
 
 ssize_t rio_readn(int fd, void *usrbuf, size_t n){
     size_t nleft = n;
