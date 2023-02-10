@@ -7,9 +7,9 @@ SET(CMAKE_CXX_STANDARD 17)
 SET(SRC_LIST 
     ./main.cpp 
     #./common/catch2/catch_amalgamated.cpp 
-    ./common/rio/rio.cpp
-    ./common/network/network.cpp
-    ./common/wrapper/unix_wrap.cpp
+    ./common/rio.cpp
+    ./common/network.cpp
+    ./common/unix_wrap.cpp
 )
 SET(OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
