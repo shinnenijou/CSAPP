@@ -6,7 +6,7 @@ SET(CMAKE_CXX_STANDARD 17)
 
 SET(SRC_LIST 
     ./main.cpp 
-    #./common/catch2/catch_amalgamated.cpp 
+    ./common/catch_amalgamated.cpp 
     ./common/rio.cpp
     ./common/network.cpp
     ./common/unix_wrap.cpp

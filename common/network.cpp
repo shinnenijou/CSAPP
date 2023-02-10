@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 int open_clientfd(char *hostname, char *port)
 {

@@ -5,7 +5,7 @@
 #include <errno.h>
 #include <iostream>
 
-void socket_error(const char *msg);
+void socket_error(const char *msg, int error_code);
 void unix_error(const char *msg);
 
 // UNIX Syetem call

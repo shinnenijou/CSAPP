@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 void socket_error(const char *msg, int error_code)
 {
