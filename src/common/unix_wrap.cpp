@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <netdb.h>
+#include <sys/mman.h>
+#include <sys/wait.h>
 #include <iostream>
 void socket_error(const char *msg, int error_code)
 {
@@ -29,6 +31,54 @@ int Close(int fd){
     if (close(fd) != 0)
         unix_error("Close error");
     return 0;
+}
+
+int Dup2(int oldfd, int newfd)
+{
+    int rc;
+    if((rc = dup2(oldfd, newfd)) == -1)
+        unix_error("Dup2 error");
+    return rc;
+}
+
+void *Mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
+{
+    void *rp;
+    if ((rp = mmap(addr, length, prot, flags, fd, offset)) == MAP_FAILED)
+        unix_error("Mmap error");
+    return rp;
+}
+
+int Munmap(void *addr, size_t length)
+{
+    int rc;
+    if ((rc = munmap(addr, length)) == -1)
+        unix_error("Munmap error");
+    return rc;
+}
+
+pid_t Fork()
+{
+    pid_t rc;
+    if((rc = fork()) == -1)
+        unix_error("Fork error");
+    return rc;
+}
+
+pid_t Wait(int *statusp)
+{
+    pid_t rc;
+    if ((rc = wait(statusp)) == -1)
+        unix_error("Wait error");
+    return rc;
+}
+
+int Execve(const char *filename, char * const *argv, char * const *envp)
+{
+    int rc;
+    if((rc = execve(filename, argv, envp)) == -1)
+        unix_error("Execve error");
+    return rc;  /* In fact never return */
 }
 
 int Accept(int listenfd, struct sockaddr *addr, socklen_t *addrlen){
