@@ -2,12 +2,6 @@
 #define RIO_H
 
 #include<sys/types.h>
-#include <unistd.h>
-#include <cerrno>
-#include <cstring>
-#include <fcntl.h>
-#include <cstdio>
-#include <cstdlib>
 
 int Open(const char *path, const int flags);
 

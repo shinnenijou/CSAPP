@@ -1,9 +1,7 @@
 #ifndef UNIX_WRAP_H
 #define UNIX_WRAP_H
 
-#include <unistd.h>
-#include <errno.h>
-#include <iostream>
+#include <sys/socket.h>
 
 void socket_error(const char *msg, int error_code);
 void unix_error(const char *msg);

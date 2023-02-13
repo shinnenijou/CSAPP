@@ -7,8 +7,9 @@
 #include<iostream>
 #include<cstring>
 
-#include "common/catch_amalgamated.hpp"
-#include "common/common.h"
+#include "catch_amalgamated.hpp"
+#include "unix_wrap.h"
+
 
 long Stoul(const std::string &__str, size_t *__idx = (size_t *)0, int __base = 10)
 {

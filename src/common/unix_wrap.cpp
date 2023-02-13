@@ -1,5 +1,11 @@
-#include "common.h"
+#include "unix_wrap.h"
 
+#include <sys/types.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <netdb.h>
+#include <iostream>
 void socket_error(const char *msg, int error_code)
 {
     std::cerr << "[Error]" << msg << ": " << gai_strerror(error_code) << std::endl;

@@ -1,4 +1,11 @@
-#include "common.h"
+#include "rio.h"
+#include<sys/types.h>
+#include <unistd.h>
+#include <cerrno>
+#include <cstring>
+#include <fcntl.h>
+#include <cstdio>
+#include <cstdlib>
 
 ssize_t rio_readn(int fd, void *usrbuf, size_t n){
     size_t nleft = n;
