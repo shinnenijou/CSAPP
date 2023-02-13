@@ -1,12 +1,14 @@
 #include "network.h"
+
 #include<sys/socket.h>
 #include<sys/types.h>
 #include<arpa/inet.h>
 #include<netdb.h>
-#include<memory>
-#include<iostream>
 #include<unistd.h>
 #include<errno.h>
+#include<memory>
+#include<iostream>
+
 #include "unix_wrap.h"
 
 int open_clientfd(char *hostname, char *port)

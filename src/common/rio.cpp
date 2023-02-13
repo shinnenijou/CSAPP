@@ -1,9 +1,10 @@
 #include "rio.h"
+
 #include<sys/types.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <cerrno>
 #include <cstring>
-#include <fcntl.h>
 #include <cstdio>
 #include <cstdlib>
 

@@ -10,6 +10,7 @@ SET(SRC_LIST
     ./src/common/rio.cpp
     ./src/common/network.cpp
     ./src/common/unix_wrap.cpp
+    ./src/assignment/cp11/tiny.cpp
 )
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
