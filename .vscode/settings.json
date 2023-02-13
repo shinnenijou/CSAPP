@@ -76,8 +76,11 @@
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "c-cpp-compile-run.c-flags": "-Wall -Wextra  -std=c17",
-    "c-cpp-compile-run.cpp-flags": "-Wall -Wextra -std=c++17",
-    "c-cpp-compile-run.c-compiler": "clang",
-    "c-cpp-compile-run.cpp-compiler": "clang++"
+    "code-runner.executorMap": {
+        "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt && rm $fileNameWithoutExt",
+        "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt && rm $fileNameWithoutExt"
+    },
+    "code-runner.runInTerminal": true,
+    "code-runner.saveFileBeforeRun": true,
+    "code-runner.clearPreviousOutput": true
 }
