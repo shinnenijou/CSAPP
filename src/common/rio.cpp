@@ -82,10 +82,12 @@ ssize_t rio_readlineb(rio_t *rp, void *usrbuf, size_t maxlen){
 
     for (n = 1; n < maxlen; n++){
         if ((read_cnt = rio_read(rp, &c, 1)) == 1){
+            *bufp++ = c;
             if(c == '\n'){
+                n++;
                 break;
             }
-            *bufp++ = c;
+
         }
         else if (read_cnt == 0){
             break;
