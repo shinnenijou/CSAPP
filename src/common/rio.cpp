@@ -16,7 +16,7 @@ ssize_t rio_readn(int fd, void *usrbuf, size_t n){
     char *bufp = (char *)usrbuf;
 
     while(nleft > 0){
-        if ((nread = read(fd, bufp, nleft)) < 0){
+        if ((nread = read(fd, bufp, nleft)) == -1){
             return -1;
         }
         else if (nread == 0){
@@ -36,7 +36,7 @@ ssize_t rio_writen(int fd, void *usrbuf, size_t n){
     char *bufp = (char *)usrbuf;
 
     while(nleft > 0){
-        if ((nwritten = write(fd, usrbuf, nleft)) <= 0){
+        if ((nwritten = write(fd, usrbuf, nleft)) == -1){
             return -1;
         }
 
@@ -60,7 +60,7 @@ ssize_t rio_read(rio_t *rp, void *usrbuf, size_t n){
     if (rp->rio_cnt <= 0){
         rp->rio_cnt = read(rp->rio_fd, rp->rio_buf, sizeof(rp->rio_buf));
 
-        if (rp->rio_cnt < 0){
+        if (rp->rio_cnt == -1){
             return -1;              /* System call error */
         }
         else if (rp->rio_cnt == 0){
@@ -108,7 +108,7 @@ ssize_t rio_readnb(rio_t *rp, void *usrbuf, size_t n){
     char *bufp = (char *)usrbuf;
 
     while(nleft > 0){
-        if ((nread = rio_read(rp, bufp, nleft)) < 0){
+        if ((nread = rio_read(rp, bufp, nleft)) == -1){
             return -1;
         }
         else if (nread == 0){
