@@ -55,14 +55,14 @@ void doit(int fd)
     /* Parse URI from GET request */
     is_static = parse_uri(uri, filename, cgiargs);
     if(stat(filename, &sbuf) < 0){
-        clienterror(fd, filename, "404", "Not found",
+        clienterror(fd, uri, "404", "Not found",
                     "Tiny couldn't find this file");
         return;
     }
 
     if(is_static){  /* Serve static content */
         if(!(S_ISREG(sbuf.st_mode)) || !(S_IRUSR & sbuf.st_mode)){
-            clienterror(fd, filename, "403", "Forbidden",
+            clienterror(fd, uri, "403", "Forbidden",
                         "Tiny couldn't read the file");
             return;
         }
@@ -70,7 +70,7 @@ void doit(int fd)
     }
     else{  /* Serve dynamic content */
         if(!(S_ISREG(sbuf.st_mode)) || !(S_IXUSR & sbuf.st_mode)){
-            clienterror(fd, filename, "403", "Forbidden",
+            clienterror(fd, uri, "403", "Forbidden",
                         "Tiny couldn't run the CGI program");
             return;
         }
