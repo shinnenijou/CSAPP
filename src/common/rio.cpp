@@ -8,6 +8,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include <unix_wrap.h>
+
 ssize_t rio_readn(int fd, void *usrbuf, size_t n){
     size_t nleft = n;
     size_t nread;
@@ -34,7 +36,7 @@ ssize_t rio_writen(int fd, void *usrbuf, size_t n){
     char *bufp = (char *)usrbuf;
 
     while(nleft > 0){
-        if ((nwritten = write(fd, usrbuf, nleft) <= 0)){
+        if ((nwritten = write(fd, usrbuf, nleft)) <= 0){
             return -1;
         }
 
