@@ -1,6 +1,5 @@
+#include "show_bytes.h"
 #include<cstdio>
-
-using byte_pointer = char*;
 
 void by_bytes(byte_pointer p, size_t n){
     for(int i = 0; i != n; ++i) printf("%.2hhx ", *p++);

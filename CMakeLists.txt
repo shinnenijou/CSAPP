@@ -11,6 +11,7 @@ SET(SRC_LIST
     ./src/common/network.cpp
     ./src/common/unix_wrap.cpp
     ./src/assignment/cp11/tiny.cpp
+    ./utils/show_bytes.cpp
 )
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)

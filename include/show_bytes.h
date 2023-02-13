@@ -1,7 +1,9 @@
-#ifndef COMMON_H
+#ifndef SHOW_BYTES_H
+#define SHOW_BYTES_H
 
-#include "show_bytes.cpp"
-#include "time_test.cpp"
+#include <sys/types.h>
+
+using byte_pointer = char*;
 
 void by_bytes(byte_pointer p, size_t n);
 void show_bytes(short x);
