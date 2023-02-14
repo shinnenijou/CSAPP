@@ -76,11 +76,12 @@ void check_client(fd_pool *poolp)
     char buf[ECHO_MAXLINE];
     rio_t *rp;
 
-    for (int i = 0; (i < poolp->maxi) && (poolp->nready > 0); ++i){
+    for (int i = 0; (i <= poolp->maxi) && (poolp->nready > 0); ++i){
         connfd = poolp->clientfd[i];
         if((connfd == -1) || !(FD_ISSET(connfd, &poolp->ready_set)))
             continue;
 
+        poolp->nready--;
         rp = &poolp->clientrio[i];
         if((n = rio_readlineb(rp, buf, ECHO_MAXLINE)) != 0){
             std::cout << "From client: " << buf;
@@ -116,6 +117,6 @@ void add_client(int connfd, fd_pool *poolp)
     if (connfd > poolp->maxfd)
         poolp->maxfd = connfd;
     
-    if (i >= poolp->maxi)
-        poolp->maxi = i + 1;
+    if (i > poolp->maxi)
+        poolp->maxi = i;
 }
