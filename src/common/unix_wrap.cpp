@@ -81,6 +81,22 @@ int Execve(const char *filename, char * const *argv, char * const *envp)
     return rc;  /* In fact never return */
 }
 
+sighandler_t Signal(int signum, sighandler_t handler)
+{
+    sighandler_t rp;
+    if((rp = signal(signum, handler)) == SIG_ERR)
+        exit(0);
+    return rp;
+}
+
+int Select(int n, fd_set *fdset)
+{
+    int rc;
+    if((rc = select(n, fdset, nullptr, nullptr, nullptr)) == -1)
+        unix_error("Select error");
+    return rc;
+}
+
 int Accept(int listenfd, struct sockaddr *addr, socklen_t *addrlen){
     int fd;
     if((fd = accept(listenfd, addr, addrlen)) < 0)
