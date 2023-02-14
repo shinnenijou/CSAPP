@@ -139,3 +139,19 @@ int main(int argc, char **argv)
 
 ## 练习题11.5
 因为图11-27中的CGI程序的标准输入与标准输被父进程重定向到了socket文件，输入输出的文件位置不会相互影响，也不需要CGI程序主动关闭文件来释放资源（内核会在程序结束时全部关闭），因此可以直接使用标准I/O。
+
+## 练习题11.6
+
+## 练习题11.7
+代码diff如下。实际测试发现体积较小的视频文件完全可以正常传输，但体积较大的视频文件会因为客户端提前关闭连接而引起SIGPIPE退出
+```
+@@ -172,6 +172,8 @@ void get_filetype(char *filename, char *filetype)
+         strcpy(filetype, "image/png");
+     else if (strstr(filename, ".jpg"))
+         strcpy(filetype, "image/jpeg");
++    else if (strstr(filename, ".mp4"))
++        strcpy(filetype, "video/mp4");
+     else
+         strcpy(filetype, "text/plain");
+ }
+```
