@@ -1,4 +1,4 @@
-#include "tiny_server.h"
+#include "tiny.h"
 
 #include <sys/socket.h>
 #include <sys/stat.h>

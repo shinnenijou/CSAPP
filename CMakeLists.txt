@@ -10,7 +10,7 @@ SET(SRC_LIST
     ./src/common/rio.cpp
     ./src/common/network.cpp
     ./src/common/unix_wrap.cpp
-    ./src/assignment/cp11/tiny_server.cpp
+    ./src/assignment/cp11/tiny.cpp
     ./utils/show_bytes.cpp
 )
 
