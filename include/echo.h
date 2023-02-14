@@ -20,7 +20,7 @@ void init_pool(int listenfd, fd_pool *poolp);
 void add_client(int connfd, fd_pool *poolp);
 void check_client(fd_pool *poolp);
 
-void echo_server(char *port);
+void echo_select(char *port);
 void echo_client(char *hostname, char *port);
 
 

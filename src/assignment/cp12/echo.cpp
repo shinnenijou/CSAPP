@@ -31,7 +31,7 @@ void echo_client(char *hostname, char *port){
     Close(clientfd);
 }
 
-void echo_server(char *port)
+void echo_select(char *port)
 {
     int listenfd, connfd;
     socklen_t clientlen;
