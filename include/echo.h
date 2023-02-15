@@ -5,7 +5,7 @@
 #include "rio.h"
 
 #define ECHO_MAXLINE 128
-#define MAXTHREAD 1
+#define MAXTHREAD 64
 #define SERVE_FAILED -1
 #define SERVE_SUCESS 0
 
