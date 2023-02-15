@@ -4,6 +4,8 @@
 #include <sys/socket.h>
 #include <signal.h>
 #include <sys/select.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 void socket_error(const char *msg, int error_code);
 void unix_error(const char *msg);
@@ -30,7 +32,13 @@ sighandler_t Signal(int signum, sighandler_t handler);
 int Select(int n, fd_set *fdset);
 
 // Unix Pthreads
-
+typedef void* (thread_routine)(void *);
+int Pthread_create(pthread_t *tid, pthread_attr_t *attr, thread_routine *f, void *arg);
+int Pthread_cancel(pthread_t tid);
+int Pthread_join(pthread_t tid, void **thread_return);
+int Pthread_detach(pthread_t tid);
+void P(sem_t *s);
+void V(sem_t *s);
 
 // UNIX Socket
 int Accept(int listenfd, struct sockaddr *addr, socklen_t *addrlen);

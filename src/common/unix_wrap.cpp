@@ -97,6 +97,50 @@ int Select(int n, fd_set *fdset)
     return rc;
 }
 
+int Pthread_create(pthread_t *tid, pthread_attr_t *attr, thread_routine *f, void *arg)
+{
+    int rc;
+    if((rc = pthread_create(tid, attr, f, arg)) != 0)
+        unix_error("Pthread_create error");
+    return rc;
+}
+
+int Pthread_cancel(pthread_t tid)
+{
+    int rc;
+    if((rc = pthread_cancel(tid)) != 0)
+        unix_error("Pthread_cancle error");
+    return rc;
+}
+
+int Pthread_join(pthread_t tid, void **thread_return)
+{
+    int rc;
+    if((rc = pthread_join(tid, thread_return)) != 0)
+        unix_error("Pthread_join error");
+    return rc;
+}
+
+int Pthread_detach(pthread_t tid)
+{
+    int rc;
+    if((rc = pthread_detach(tid)) != 0)
+        unix_error("Pthread_detach error");
+    return rc;
+}
+
+void P(sem_t *s)
+{
+    if(sem_wait(s) == -1)
+        unix_error("P error");
+}
+
+void V(sem_t *s)
+{
+    if(sem_post(s) == -1)
+        unix_error("V error");
+}
+
 int Accept(int listenfd, struct sockaddr *addr, socklen_t *addrlen){
     int fd;
     if((fd = accept(listenfd, addr, addrlen)) < 0)
