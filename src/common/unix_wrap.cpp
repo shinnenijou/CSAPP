@@ -57,6 +57,22 @@ int Munmap(void *addr, size_t length)
     return rc;
 }
 
+void *Malloc(size_t __size)
+{
+    void *rp;
+    if ((rp = malloc(__size)) == nullptr)
+        unix_error("Malloc error");
+    return rp;
+}
+
+void *Calloc(size_t __count, size_t __size)
+{
+    void *rp;
+    if ((rp = calloc(__count, __size)) == nullptr)
+        unix_error("Calloc error");
+    return rp;
+}
+
 pid_t Fork()
 {
     pid_t rc;
@@ -126,6 +142,30 @@ int Pthread_detach(pthread_t tid)
     int rc;
     if((rc = pthread_detach(tid)) != 0)
         unix_error("Pthread_detach error");
+    return rc;
+}
+
+sem_t *Sem_open(const char *name, int flag, mode_t mode, unsigned int value)
+{
+    sem_t *rp;
+    if((rp = sem_open(name, flag, mode, value)) == SEM_FAILED)
+        unix_error("Sem_open error");
+    return rp;
+}
+
+int Sem_close(sem_t *s)
+{
+    int rc;
+    if((rc = sem_close(s)) == -1)
+        unix_error("Sem_close error");
+    return rc;
+}
+
+int Sem_unlink(const char *name)
+{
+    int rc;
+    if((rc = sem_unlink(name)) == -1)
+        unix_error("Sem_unlink error");
     return rc;
 }
 

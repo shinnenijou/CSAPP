@@ -18,6 +18,8 @@ int Dup2(int oldfd, int newfd);
 // Unix Memory
 void *Mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
 int Munmap(void *addr, size_t length);
+void *Malloc(size_t __size);
+void *Calloc(size_t __count, size_t __size);
 
 // Unix Process
 pid_t Fork();
@@ -37,6 +39,9 @@ int Pthread_create(pthread_t *tid, pthread_attr_t *attr, thread_routine *f, void
 int Pthread_cancel(pthread_t tid);
 int Pthread_join(pthread_t tid, void **thread_return);
 int Pthread_detach(pthread_t tid);
+sem_t *Sem_open(const char *name, int flag, mode_t mode, unsigned int value);
+int Sem_close(sem_t *s);
+int Sem_unlink(const char *name);
 void P(sem_t *s);
 void V(sem_t *s);
 
