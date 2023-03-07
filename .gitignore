@@ -49,9 +49,4 @@ bin
 # myfiles
 src_to_show_asm.cpp
 .DS_Store
-unittest.dSYM
-unittest
-main
-unitest
-test_case.txt
-.vscode/c_cpp_properties.json
+unittest/unittest
