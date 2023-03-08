@@ -1,15 +1,25 @@
 #include "catch_amalgamated.hpp"
 #include "catch_amalgamated.cpp"
 
-
-int factorial(int x)
+int fits_bits(int x, int n)
 {
-    return 1;
+    int mask = ~((1 << (n - 1)) - 1);
+    return ((x & mask) ^ mask) == 0 || (x & mask) == 0;
 }
 
 TEST_CASE( "Factorials are computed", "[factorial]" ) {
-    REQUIRE( factorial( 1) == 1 );
-    REQUIRE( factorial( 2) == 2 );
-    REQUIRE( factorial( 3) == 6 );
-    REQUIRE( factorial(10) == 3'628'800 );
+    REQUIRE( fits_bits( 0x78, 1) == 0 );
+    REQUIRE( fits_bits( 0x78, 7) == 0 );
+    REQUIRE( fits_bits( 0x78, 8) == 1 );
+    REQUIRE( fits_bits( 0x78, 9) == 1 );
+    REQUIRE( fits_bits( 0xFF, 1) == 0 );
+    REQUIRE( fits_bits( 0xFF, 7) == 0 );
+    REQUIRE( fits_bits( 0xFF, 8) == 0 );
+    REQUIRE( fits_bits( 0xFF, 9) == 1 );
+    REQUIRE( fits_bits( 0xFFFFFFFA, 1) == 0 );
+    REQUIRE( fits_bits( 0xFFFFFFFA, 2) == 0 );
+    REQUIRE( fits_bits( 0xFFFFFFFA, 3) == 0 );
+    REQUIRE( fits_bits( 0xFFFFFFFA, 4) == 1 );
+    REQUIRE( fits_bits( 0xFFFFFFFA, 5) == 1 );
+
 }
