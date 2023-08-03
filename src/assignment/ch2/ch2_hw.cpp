@@ -99,6 +99,23 @@ bool odd_ones(unsigned x)
     return x;
 }
 
+/* Ex. 2.66
+ * Generate mask indicating leftmost 1 in x.  Assume w=32.
+ * For example, 0xFF00 -> 0x8000, and 0x6600 --> 0x4000.
+ * If x = 0, then return 0.
+ */
+int leftmost_one(unsigned x)
+{
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x -= x >> 1;
+
+    return x;
+}
+
 /* Ex. 2.68
  * Mask with least significant n bits set to 1
  * Example: n = 6 --> 0x3F, n = 17 --> 0x1FFFF
@@ -139,4 +156,20 @@ typedef unsigned packed_t;
 int xbyte(packed_t word, int bytenum)
 {
     return (int)(word << ((3 - bytenum) << 3)) >> 24;
+}
+
+/* Ex. 2.73
+ * Addition that asturates to TMin or TMax
+ */
+int saturating_add(int x, int y)
+{
+    unsigned ux = x, uy = y, uxy = ux + uy;
+    unsigned mask = INT_MIN;
+    
+    // 同号mask, 异号0. 为mask时才会溢出
+    unsigned r1 = (ux ^ uy ^ mask) & mask;
+    // 同号mask, 异号0. 为0时才会溢出
+    unsigned r2 = (uxy ^ ux ^ mask) & mask;
+    // 溢出mask, 不溢出为0
+    unsigned r3 = r1 & ~r2;         
 }
