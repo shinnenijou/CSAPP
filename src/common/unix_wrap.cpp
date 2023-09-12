@@ -7,6 +7,7 @@
 #include <netdb.h>
 #include <sys/mman.h>
 #include <sys/wait.h>
+#include <cstring>
 #include <iostream>
 void socket_error(const char *msg, int error_code)
 {
