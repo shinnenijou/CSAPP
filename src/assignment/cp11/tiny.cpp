@@ -6,6 +6,8 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <cstring>
+#include <cstdio>
 #include <iostream>
 
 #include "unix_wrap.h"
