@@ -1,11 +1,16 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 PROJECT(CASPP)
 
 SET(CMAKE_CXX_STANDARD 17)
 
-SET(SRC_LIST 
-    ./main.cpp 
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
+SET(OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+
+# Tiny Server 
+SET(TINY_SERVER_SRC_LIST 
+    ./tiny_server.cpp 
     ./src/common/rio.cpp
     ./src/common/network.cpp
     ./src/common/unix_wrap.cpp
@@ -14,9 +19,12 @@ SET(SRC_LIST
     ./utils/show_bytes.cpp
 )
 
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
+ADD_EXECUTABLE(tiny_server ${TINY_SERVER_SRC_LIST})
 
-SET(OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+# Homework Test
+SET(HOMEWORK_SRC_LIST 
+    ./src/assignment/ch2/ch2_hw.cpp
+    ./unittest/unittest.cpp
+)
 
-ADD_EXECUTABLE(main ${SRC_LIST})
+ADD_EXECUTABLE(hw_test ${HOMEWORK_SRC_LIST})

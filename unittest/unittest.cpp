@@ -1,11 +1,7 @@
 #include "catch_amalgamated.hpp"
 #include "catch_amalgamated.cpp"
 
-int fits_bits(int x, int n)
-{
-    int mask = ~((1 << (n - 1)) - 1);
-    return ((x & mask) ^ mask) == 0 || (x & mask) == 0;
-}
+int fits_bits(int x, int n);
 
 TEST_CASE( "Factorials are computed", "[factorial]" ) {
     REQUIRE( fits_bits( 0x78, 1) == 0 );
