@@ -15,8 +15,7 @@ int parse_uri(char *uri, char *filename, char *cgiargs);
 void serve_static(int fd, char *filename, int filesize);
 void get_filetype(char *filename, char *filetype);
 void serve_dynamic(int fd, char *filename, char *cgiargs);
-void clienterror(int fd, char *cause, char *errnum,
-                 char *shortmsg, char *longmsg);
-void run(char *port);
+void clienterror(int fd, const char *cause, const char *errnum, const char *shortmsg, const char *longmsg);
+void run(const char *port);
 
 #endif

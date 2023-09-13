@@ -58,7 +58,7 @@ int Open_clientfd(char *hostname, char *port){
     return rc;
 }
 
-int open_listenfd(char *port)
+int open_listenfd(const char *port)
 {
     int listenfd, optval = 1;
     struct addrinfo *p, *listp, hints;
@@ -99,7 +99,7 @@ int open_listenfd(char *port)
     return listenfd;
 }
 
-int Open_listenfd(char *port){
+int Open_listenfd(const char *port){
     int rc;
     if((rc = open_listenfd(port)) < 0){
         exit(-1);

@@ -12,7 +12,7 @@
 
 #include "unix_wrap.h"
 #include "network.h"
-void run(char *port)
+void run(const char *port)
 {
     int listenfd, connfd;
     char hostname[TINY_MAXLINE], client_port[TINY_MAXLINE];
@@ -80,7 +80,7 @@ void doit(int fd)
     }
 }
 
-void clienterror(int fd, char *cause, char *errnum, char *shortmsg, char *longmsg)
+void clienterror(int fd, const char *cause, const char *errnum, const char *shortmsg, const char *longmsg)
 {
     char buf[TINY_MAXLINE], body[TINY_MAXBUF];
 
