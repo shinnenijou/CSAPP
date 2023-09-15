@@ -163,13 +163,27 @@ int xbyte(packed_t word, int bytenum)
  */
 int saturating_add(int x, int y)
 {
-    unsigned ux = x, uy = y, uxy = ux + uy;
-    unsigned mask = INT_MIN;
-    
-    // 同号mask, 异号0. 为mask时才会溢出
-    unsigned r1 = (ux ^ uy ^ mask) & mask;
-    // 同号mask, 异号0. 为0时才会溢出
-    unsigned r2 = (uxy ^ ux ^ mask) & mask;
-    // 溢出mask, 不溢出为0
-    unsigned r3 = r1 & ~r2;         
+    int rsh_bit = (sizeof(int) << 3) - 1;
+    int x_sign = (x & INT_MIN) >> rsh_bit;
+    int xy_sign = x_sign ^ ((y & INT_MIN) >> rsh_bit);
+    int sum = x + y;
+    int xsum_sign = x_sign ^ ((sum & INT_MIN) >> rsh_bit); 
+
+    // temp1 == 0 -> no overflow
+    // temp1: == -1 -> overflow
+    int temp1 = (~xy_sign & (xy_sign ^ xsum_sign));
+
+    return (sum & ~temp1) + (temp1 & (x_sign ^ INT_MAX));
+}
+
+/* Ex. 2.74
+ * Determine whether arguments can be subtracted without overflow
+ */
+int tsub_ok(int x, int y)
+{
+    int x_sign = x & INT_MIN;
+    int xy_sign = x_sign ^ (y & INT_MIN);
+    int xsub_sign = x_sign ^ ((x - y) & INT_MIN);
+
+    return (xy_sign & xsub_sign) == 0;
 }
