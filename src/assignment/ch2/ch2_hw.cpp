@@ -1,4 +1,5 @@
 #include<climits>
+#include<cstdlib>
 
 /* Ex. 2.58: 
  * This function is to test wether your mechine is little endian
@@ -186,4 +187,177 @@ int tsub_ok(int x, int y)
     int xsub_sign = x_sign ^ ((x - y) & INT_MIN);
 
     return (xy_sign & xsub_sign) == 0;
+}
+
+/* Ex. 2.75
+ * Calculate the high w bit of the production of unsigned int x and unsigned int y
+ */
+int signed_high_prod(int x, int y);
+unsigned unsigned_high_prod(unsigned x, unsigned y)
+{
+    return signed_high_prod(x, y);
+}
+
+/* Ex. 2.76
+ * Implementation for standard calloc
+ */
+void *my_calloc(size_t nmemb, size_t size)
+{
+    return nullptr;
+}
+
+/* Ex. 2.77
+ * quick multiplication by given factor K
+ */
+void quick_multiply(int x)
+{
+    int A = x + (x << 4); // K = 17
+    int B = x - (x << 3); // K = -7
+    int C = (x << 6) - (x << 2); // K = 60
+    int D = (x << 4) - (x << 7); // K = -112
+}
+
+/* Ex. 2.78
+ * Divide by power 2. Assume 0 <= k < w -1
+ */
+int divide_power2(int x, int k)
+{
+    int mask = x >> ((sizeof(int) << 3) - 1);
+    return (x + (mask & ((1 << k) - 1))) >> k;
+}
+
+/* Ex. 2.79
+ * Calculate 3 * x/4. May overflow when 3 * x
+ */
+int mul3div4(int x)
+{
+    x = x + x + x;
+    int mask = x >> ((sizeof(int) << 3) - 1);
+    return (x + (mask & 3)) >> 2;
+}
+
+/* Ex. 2.80
+ * Calculate 3 * x/4. Never overflow
+ */
+int threefourths(int x)
+{
+    int mask = ~(x >> ((sizeof(int) << 3) - 1));
+    int fourth = ((x & ~3) >> 2) + (((x & 3) + (mask & 3)) >> 2);
+    return x + ~fourth + 1;
+}
+
+/* Ex. 2.81
+ * generate bits 
+ */
+unsigned generate_bits(unsigned j, unsigned k)
+{
+    unsigned A = ~((1 << k) - 1);
+    unsigned B = ((1 << (j + k)) - 1) ^ ((1 << j) - 1);
+}
+
+/* floating-point part */
+/* Access bit-level representation floating-point number*/
+typedef unsigned float_bits;
+
+#define SIGN_MASK 0x80000000
+#define EXP_MASK 0x7f800000
+#define FRAC_MASK 0x7FFFFF
+#define EXP_BIAS 127
+#define GET_SIGN(x) (x >> 31)
+#define GET_EXP_BITS(x) ((x & EXP_MASK) >> 23)
+#define GET_FRAC_BITS(x) (x & FRAC_MASK)
+#define IS_NAN(x) (GET_EXP_BITS(x) == 0xFF && GET_FRAC_BITS(x) != 0)
+#define MAKE_FLOAT_BITS(sign, exp, frac) ((sign << 31) | (exp << 23) | frac)
+#define ROUND_2_EVEN(x, k) (((x + ((x & (1 << (k - 1))) & ((x & (1 << k)) >> 1))) >> (k - 1)) << (k - 1))
+
+/* Ex. 2.92
+ * Compute -f. If f is NaN, then return f.
+ */
+float_bits float_negate(float_bits f)
+{
+    if (IS_NAN(f))
+    {
+        return f;
+    }
+
+    return f ^ SIGN_MASK;
+}
+
+/* Ex. 2.93
+ * Compute |f|. If f is NaN, then return f.
+ */
+float_bits float_absval(float_bits f)
+{
+    if (IS_NAN(f))
+    {
+        return f;
+    }
+
+    return f & ~SIGN_MASK;
+}
+
+/* Ex. 2.94
+ * Compute 2.0 * f. If f is NaN, then return f.
+ */
+float_bits float_twice(float_bits f)
+{
+    float_bits sign = GET_SIGN(f);
+    float_bits exp = GET_EXP_BITS(f);
+    float_bits frac = GET_FRAC_BITS(f);
+
+    if (exp == 0xFF)
+    {
+        return f;
+    }
+
+    if (exp > 0)
+    {
+        exp++;
+
+        if (exp >= 0xFF)
+        {
+            exp = 0xFF;
+            frac = 0;
+        }
+    }
+    else
+    {
+        frac <<= 1;
+    }
+
+    return MAKE_FLOAT_BITS(sign, exp, frac);
+}
+
+/* Ex. 2.95
+ * Compute 0.5 * f. If f is NaN, then return f.
+ */
+float_bits float_half(float_bits f)
+{
+    float_bits sign = GET_SIGN(f);
+    float_bits exp = GET_EXP_BITS(f);
+    float_bits frac = GET_FRAC_BITS(f);
+
+    if (exp == 0xFF)
+    {
+        return f;
+    }
+
+    if (exp > 0)
+    {
+        exp--;
+
+        if (exp == 0)
+        {
+            frac = ROUND_2_EVEN(frac, 1);
+            frac >>= 1;
+            frac += 0x400000;
+        }
+    }
+    else
+    {
+        frac = ROUND_2_EVEN(frac, 1);
+        frac >>= 1;
+    }
+
+    return MAKE_FLOAT_BITS(sign, exp, frac);
 }
