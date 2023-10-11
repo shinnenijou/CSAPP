@@ -249,7 +249,7 @@ int threefourths(int x)
 /* Ex. 2.81
  * generate bits 
  */
-unsigned generate_bits(unsigned j, unsigned k)
+void generate_bits(unsigned j, unsigned k)
 {
     unsigned A = ~((1 << k) - 1);
     unsigned B = ((1 << (j + k)) - 1) ^ ((1 << j) - 1);
@@ -259,15 +259,17 @@ unsigned generate_bits(unsigned j, unsigned k)
 /* Access bit-level representation floating-point number*/
 typedef unsigned float_bits;
 
-#define SIGN_MASK 0x80000000
-#define EXP_MASK 0x7f800000
-#define FRAC_MASK 0x7FFFFF
-#define EXP_BIAS 127
-#define GET_SIGN(x) (x >> 31)
-#define GET_EXP_BITS(x) ((x & EXP_MASK) >> 23)
-#define GET_FRAC_BITS(x) (x & FRAC_MASK)
-#define IS_NAN(x) (GET_EXP_BITS(x) == 0xFF && GET_FRAC_BITS(x) != 0)
-#define MAKE_FLOAT_BITS(sign, exp, frac) ((sign << 31) | (exp << 23) | frac)
+static const unsigned FLOAT_W = 32;
+static const unsigned FLOAT_FRAC_W = 23;
+static const unsigned FLOAT_SIGN_MASK = 1 << (FLOAT_W - 1);
+static const unsigned FLOAT_FRAC_MASK = (1 << FLOAT_FRAC_W) - 1;
+static const unsigned FLOAT_EXP_MASK = ~0 ^ FLOAT_SIGN_MASK ^ FLOAT_FRAC_MASK;
+static const unsigned FLOAT_EXP_BIAS = (1 << (FLOAT_W - FLOAT_FRAC_W - 2)) - 1;
+#define GET_SIGN(x) (x >> (FLOAT_W - 1))
+#define GET_EXP_BITS(x) ((x & FLOAT_EXP_MASK) >> FLOAT_FRAC_W)
+#define GET_FRAC_BITS(x) (x & FLOAT_FRAC_MASK)
+#define IS_NAN(x) (GET_EXP_BITS(x) == ((1 << (FLOAT_W - FLOAT_FRAC_W - 1)) - 1) && GET_FRAC_BITS(x) != 0)
+#define MAKE_FLOAT_BITS(sign, exp, frac) ((sign << (FLOAT_W - 1)) | (exp << FLOAT_FRAC_W) | frac)
 #define ROUND_2_EVEN(x, k) (((x + ((x & (1 << (k - 1))) & ((x & (1 << k)) >> 1))) >> (k - 1)) << (k - 1))
 
 /* Ex. 2.92
@@ -280,7 +282,7 @@ float_bits float_negate(float_bits f)
         return f;
     }
 
-    return f ^ SIGN_MASK;
+    return f ^ FLOAT_SIGN_MASK;
 }
 
 /* Ex. 2.93
@@ -293,7 +295,7 @@ float_bits float_absval(float_bits f)
         return f;
     }
 
-    return f & ~SIGN_MASK;
+    return f & ~FLOAT_SIGN_MASK;
 }
 
 /* Ex. 2.94
@@ -360,4 +362,48 @@ float_bits float_half(float_bits f)
     }
 
     return MAKE_FLOAT_BITS(sign, exp, frac);
+}
+
+/* Ex. 2.96
+ * Compute (int)f. If conversion causes overflow or f is Nan, return 0x80000000.
+ * ROUND to Zero
+ */
+int float_f2i(float_bits f)
+{
+    float_bits sign, exp, frac;
+    float_bits round_bit, round_mask;
+    float_bits ret;
+
+    sign = f & FLOAT_SIGN_MASK;
+    exp = (f & FLOAT_EXP_MASK) >> FLOAT_FRAC_W;
+    frac = f & FLOAT_FRAC_MASK;
+
+    if (exp >= FLOAT_W - 1 + FLOAT_EXP_BIAS)
+    {
+        return FLOAT_SIGN_MASK;
+    }
+
+    if (exp < FLOAT_EXP_BIAS)
+    {
+        return 0;
+    }
+
+    exp -= FLOAT_EXP_BIAS;
+    frac += (1 << FLOAT_FRAC_W);
+
+    int result1 = frac << (exp - FLOAT_FRAC_W);
+    int result2 = frac >> (FLOAT_FRAC_W - exp);
+
+    ret = exp >= FLOAT_FRAC_W ? result1 : result2;
+
+    return sign ? -ret : ret;
+}
+
+/* Ex. 2.97
+ * Compute (float) i. Assume 32-bit int
+ */
+float_bits float_i2f(int i)
+{
+    
+    return 0;
 }

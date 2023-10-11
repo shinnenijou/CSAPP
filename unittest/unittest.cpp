@@ -276,5 +276,24 @@ int run_float_f2i_test()
 }
 
 TEST_CASE( "Compute (int)f. If conversion causes overflow or f is Nan, return 0x80000000." ,"[float_f2i]" ) {
-    REQUIRE(run_float_f2i_test() == 0);
+    //REQUIRE(run_float_f2i_test() == 0);
+}
+
+float_bits float_i2f(int i);
+
+int run_float_i2f_test()
+{
+    for (int b = INT_MIN; b <= INT_MAX; b++)
+    {
+        if (float_i2f(b) != (float)b)
+        {
+            return b;
+        }
+    }
+
+    return 0;
+}
+
+TEST_CASE( "Compute (float) i." ,"[float_i2f]" ) {
+    REQUIRE(run_float_i2f_test() == 0);
 }

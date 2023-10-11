@@ -286,7 +286,30 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  unsigned sign = uf & 0x80000000;
+  unsigned exp = uf & 0x7f800000;
+  unsigned frac = uf & 0x7FFFFF;
+
+  if (exp == 0x7f800000)
+  {
+      return uf;
+  }
+
+  if (exp > 0)
+  {
+      exp += 0x800000;
+
+      if (exp >= 0x7f800000)
+      {
+          frac = 0;
+      }
+  }
+  else
+  {
+      frac <<= 1;
+  }
+
+  return sign | exp | frac;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
@@ -301,7 +324,46 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  unsigned sign, exp, frac, bias;
+  unsigned round_bit, round_mask;
+  unsigned ret;
+
+  bias = 127;
+
+  sign = uf & 0x80000000;
+  exp = (uf & 0x7F800000) >> 23;
+  frac = uf & 0x7FFFFF;
+
+  if (exp >= 158) // shift_max + bias
+  {
+    return 0x80000000;
+  }
+
+  if (exp < bias)
+  {
+    return 0;
+  }
+
+  exp -= bias;
+  frac += 0x800000; // 1 << n
+
+  if (exp >= 23) // shift_max - k
+  {
+    ret = frac << (exp - 23);
+    return sign ? -ret : ret;
+  }
+  
+  round_bit = 1 << (22 - exp); // shift_max - k -1
+  round_mask = round_bit - 1;
+
+  // ROUND to Even
+  if ((frac & round_bit) && (frac & round_mask || frac & (round_bit << 1)))
+  {
+    frac += round_bit;
+  }
+
+  ret = frac >> (23 - exp);
+  return sign ? -ret : ret;
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
@@ -317,5 +379,20 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+  if ( x <= -150)
+  {
+    return 0;
+  }
+
+  if ( x >= 128)
+  {
+    return 0x7f800000;
+  }
+
+  if ( x >= -126)
+  {
+    return (x + 127) << 23;
+  }
+
+  return 0x600000 >> (127 - x);
 }
