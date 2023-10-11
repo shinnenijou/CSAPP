@@ -271,7 +271,47 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+  int sign = x >> 31;
+  int count = 1, temp, mask;
+
+  x ^= sign;
+
+  x |= x >> 1;
+  x |= x >> 2;
+  x |= x >> 4;
+  x |= x >> 8;
+  x |= x >> 16;
+  x = ((x << 1) + 1) ^ x;
+
+  mask = 0xFF;
+  mask |= mask << 8;
+  temp = x & mask;
+  count += (!temp) << 4;
+
+  mask = 0xFF;
+  mask |= mask << 16;
+  temp = x & mask;
+  count += (!temp) << 3;
+
+  mask = 0xF;
+  mask |= mask << 8;
+  mask |= mask << 16;
+  temp = x & mask;
+  count += (!temp) << 2;
+
+  mask = 0x33;
+  mask |= mask << 8;
+  mask |= mask << 16;
+  temp = x & mask;
+  count += (!temp) << 1;
+  
+  mask = 0x55;
+  mask |= mask << 8;
+  mask |= mask << 16;
+  temp = x & mask;
+  count += !temp;
+
+  return count;
 }
 //float
 /* 
