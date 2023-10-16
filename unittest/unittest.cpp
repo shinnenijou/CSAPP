@@ -4,9 +4,10 @@
 #include <climits>
 #include <cmath>
 
+/* ------------------------- Chapter 2 ---------------------------- */
 int saturating_add(int x, int y);
 
-TEST_CASE( "Addition that asturates to TMin or TMax" ,"[saturating_add]" ) {
+TEST_CASE( "Addition that asturates to TMin or TMax" ,"[.][chapter2]" ) {
     REQUIRE( saturating_add(1, 1) == 2 );
     REQUIRE( saturating_add(INT_MAX - 1, 1) == INT_MAX );
     REQUIRE( saturating_add(INT_MAX - 1, 2) == INT_MAX );
@@ -28,7 +29,7 @@ TEST_CASE( "Addition that asturates to TMin or TMax" ,"[saturating_add]" ) {
 
 int tsub_ok(int, int);
 
-TEST_CASE( "Determine whether arguments can be subtracted without overflow" ,"[tsub_ok]" ) {
+TEST_CASE( "Determine whether arguments can be subtracted without overflow" ,"[.][chapter2]" ) {
     REQUIRE( tsub_ok(1, 1) == 1);
     REQUIRE( tsub_ok(0x80000001, 0) == 1);
     REQUIRE( tsub_ok(0x80000001, 1) == 1);
@@ -57,7 +58,7 @@ unsigned test_unsigned_high_prod(unsigned x, unsigned y)
 
 unsigned unsigned_high_prod(unsigned x, unsigned y);
 
-TEST_CASE( "Calculate the high w bit of the production of unsigned int x and unsigned int y" ,"[unsigned_high_prod]" ) {
+TEST_CASE( "Calculate the high w bit of the production of unsigned int x and unsigned int y" ,"[.][chapter2]" ) {
     REQUIRE( unsigned_high_prod(INT_MAX, INT_MAX) == test_unsigned_high_prod(INT_MAX, INT_MAX) );
     REQUIRE( unsigned_high_prod(0, INT_MAX) == test_unsigned_high_prod(0, INT_MAX) );
     REQUIRE( unsigned_high_prod(INT_MAX / 2, INT_MAX) == test_unsigned_high_prod(INT_MAX / 2, INT_MAX) );
@@ -68,7 +69,7 @@ TEST_CASE( "Calculate the high w bit of the production of unsigned int x and uns
 
 int divide_power2(int x, int k);
 
-TEST_CASE( "Divide by power 2. Assume 0 <= k < w -1" ,"[divide_power2]" ) {
+TEST_CASE( "Divide by power 2. Assume 0 <= k < w -1" ,"[.][chapter2]" ) {
     REQUIRE( divide_power2(INT_MAX, 0) == (INT_MAX/(1 << 0)));
     REQUIRE( divide_power2(INT_MAX, 1) == (INT_MAX/(1 << 1)));
     REQUIRE( divide_power2(INT_MAX, 10) == (INT_MAX/(1 << 10)));
@@ -83,7 +84,7 @@ TEST_CASE( "Divide by power 2. Assume 0 <= k < w -1" ,"[divide_power2]" ) {
 
 int mul3div4(int x);
 
-TEST_CASE( "Calculate 3 * x/4. May overflow when 3 * x" ,"[mul3div4]" ) {
+TEST_CASE( "Calculate 3 * x/4. May overflow when 3 * x" ,"[.][chapter2]" ) {
     REQUIRE( mul3div4(0) == (3 * 0 / 4));
     REQUIRE( mul3div4(1) == (3 * 1 / 4));
     REQUIRE( mul3div4(2) == (3 * 2 / 4));
@@ -105,7 +106,7 @@ TEST_CASE( "Calculate 3 * x/4. May overflow when 3 * x" ,"[mul3div4]" ) {
 
 int threefourths(int x);
 
-TEST_CASE( "Calculate 3 * x/4. Never overflow" ,"[threefourths]" ) {
+TEST_CASE( "Calculate 3 * x/4. Never overflow" ,"[.][chapter2]" ) {
     REQUIRE( threefourths(0) == (3 * 0 / 4));
     REQUIRE( threefourths(1) == (3 * 1 / 4));
     REQUIRE( threefourths(2) == (3 * 2 / 4));
@@ -132,13 +133,15 @@ typedef unsigned float_bits;
 /* Convert float to float_bits in bit-level */
 float_bits float_f2b(float f)
 {
-    return *((float_bits*)&f);
+    float_bits ret = *((float_bits*)&f); 
+    return ret;
 }
 
 /* Convert float_bits to float in bit-level */
 float float_b2f(float_bits fb)
 {
-    return *((float*)&fb);
+    float ret = *((float*)&fb);
+    return ret;
 }
 
 /*-------------------------------------------*/
@@ -166,7 +169,7 @@ int run_float_negate_test()
     return 0;
 }
 
-TEST_CASE( "Compute -f. If f is NaN, then return f." ,"[float_negate]" ) {
+TEST_CASE( "Compute -f. If f is NaN, then return f." ,"[.][chapter2]" ) {
     REQUIRE(run_float_negate_test() == 0);
 }
 
@@ -193,7 +196,7 @@ int run_float_absval_test()
     return 0;
 }
 
-TEST_CASE( "Compute |f|. If f is NaN, then return f." ,"[float_absval]" ) {
+TEST_CASE( "Compute |f|. If f is NaN, then return f." ,"[.][chapter2]" ) {
     REQUIRE(run_float_absval_test() == 0);
 }
 
@@ -220,7 +223,7 @@ int run_float_twice_test()
     return 0;
 }
 
-TEST_CASE( "Compute 2.0 * f. If f is NaN, then return f." ,"[float_twice]" ) {
+TEST_CASE( "Compute 2.0 * f. If f is NaN, then return f." ,"[.][chapter2]" ) {
     REQUIRE(run_float_twice_test() == 0);
 }
 
@@ -248,7 +251,7 @@ int run_float_half_test()
     return 0;
 }
 
-TEST_CASE( "Compute 0.5 * f. If f is NaN, then return f." ,"[float_half]" ) {
+TEST_CASE( "Compute 0.5 * f. If f is NaN, then return f." ,"[.][chapter2]" ) {
     REQUIRE(run_float_half_test() == 0);
 }
 
@@ -275,8 +278,8 @@ int run_float_f2i_test()
     return 0;
 }
 
-TEST_CASE( "Compute (int)f. If conversion causes overflow or f is Nan, return 0x80000000." ,"[float_f2i]" ) {
-    //REQUIRE(run_float_f2i_test() == 0);
+TEST_CASE( "Compute (int)f. If conversion causes overflow or f is Nan, return 0x80000000." ,"[.][chapter2]" ) {
+    REQUIRE(run_float_f2i_test() == 0);
 }
 
 float_bits float_i2f(int i);
@@ -285,7 +288,10 @@ int run_float_i2f_test()
 {
     for (int b = INT_MIN; b <= INT_MAX; b++)
     {
-        if (float_i2f(b) != (float)b)
+        float f1 = float_b2f(float_i2f(b));
+        float f2 = (float)b;
+        
+        if ( f1 != f2)
         {
             return b;
         }
@@ -294,6 +300,8 @@ int run_float_i2f_test()
     return 0;
 }
 
-TEST_CASE( "Compute (float) i." ,"[float_i2f]" ) {
+TEST_CASE( "Compute (float) i." ,"[.][chapter2]" ) {
     REQUIRE(run_float_i2f_test() == 0);
 }
+
+/* ------------------------------------------------------ */
