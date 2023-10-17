@@ -286,7 +286,8 @@ float_bits float_i2f(int i);
 
 int run_float_i2f_test()
 {
-    for (int b = INT_MIN; b <= INT_MAX; b++)
+    int b = INT_MIN;
+    do
     {
         float f1 = float_b2f(float_i2f(b));
         float f2 = (float)b;
@@ -295,7 +296,9 @@ int run_float_i2f_test()
         {
             return b;
         }
-    }
+
+        b++;
+    }while(b > INT_MIN);
 
     return 0;
 }

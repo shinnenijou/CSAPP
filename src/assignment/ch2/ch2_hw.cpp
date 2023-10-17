@@ -404,6 +404,91 @@ int float_f2i(float_bits f)
  */
 float_bits float_i2f(int i)
 {
-    
-    return 0;
+    int sign = GET_SIGN(i);
+
+    if ( (i & ~(1 << (FLOAT_W - 1))) == 0)
+    {
+        return MAKE_FLOAT_BITS(sign, (sign & (FLOAT_EXP_BIAS + FLOAT_W - 1)), 0);
+    }
+
+    i = (i & ~sign) | (-i & sign);
+
+    int count = 0;
+
+    {
+        int x = i;
+        int temp, mask;
+
+        x |= x >> 1;
+        x |= x >> 2;
+        x |= x >> 4;
+        x |= x >> 8;
+        x |= x >> 16;
+        x -= x >> 1;
+
+        mask = 0xFF;
+        mask |= mask << 8;
+        mask = ~mask;
+        temp = x & mask;
+        count += (!!temp) << 4;
+
+        mask = 0xFF;
+        mask |= mask << 16;
+        mask = ~mask;
+        temp = x & mask;
+        count += (!!temp) << 3;
+
+        mask = 0xF;
+        mask |= mask << 8;
+        mask |= mask << 16;
+        mask = ~mask;
+        temp = x & mask;
+        count += (!!temp) << 2;
+
+        mask = 0x33;
+        mask |= mask << 8;
+        mask |= mask << 16;
+        mask = ~mask;
+        temp = x & mask;
+        count += (!!temp) << 1;
+
+        mask = 0x55;
+        mask |= mask << 8;
+        mask |= mask << 16;
+        mask = ~mask;
+        temp = x & mask;
+        count += !!temp;
+
+        mask = ~0;
+        temp = x & mask;
+        count += !!temp;
+    }
+
+    int exp = count + FLOAT_EXP_BIAS - 1;
+
+    if (count <= FLOAT_FRAC_W + 1)
+    {
+        i <<= FLOAT_FRAC_W + 1 - count;
+    }
+    else
+    {
+        // Round to even
+        int round_bit = 1 << (count - FLOAT_FRAC_W - 2);
+        int round_mask = round_bit - 1;
+
+        if ( (i & round_bit) == 0 || ((i & round_mask) == 0 && ((i >> 1) & round_bit) == 0 ))
+        {
+            i >>= count - FLOAT_FRAC_W - 1;
+        }
+        else
+        {
+            i >>= count - FLOAT_FRAC_W - 1;
+            i += 1;
+            exp += i >> (FLOAT_FRAC_W + 1);
+        }
+    }
+
+    i &= (1 << FLOAT_FRAC_W) - 1;
+
+    return MAKE_FLOAT_BITS(sign, exp, i);
 }
